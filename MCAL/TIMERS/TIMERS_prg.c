@@ -19,6 +19,7 @@ static u32 G_u32T_required=0;
 
 void MTIMERS_vInit(void)
 {
+
 	//	/* Waveform generation (normal OF mode)*/
 	//	/* Stop timer */
 	//	TCCR0 = 0x00;
