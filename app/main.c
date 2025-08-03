@@ -29,7 +29,6 @@ u8 temp = 0;
 
 /////////////////////////////////////////////////
 void LDR_func(void);
-void LM35_FUNC(void);
 void MotorUp_Func(void);
 void MotorDown_Func(void);
 void motorstop(void);
@@ -67,11 +66,11 @@ void main(void)
             motorstop();
             continue;
         }
+        
+        
+         LDR_func();
 
-        // You may uncomment this if you want LDR-based control too
-        // LDR_func();
-
-        _delay_ms(500);  // Short delay to allow USART output readability
+       // _delay_ms(500);  
     }
 }
 
@@ -139,7 +138,7 @@ void ALARM_FUNC(void)
     {
         overheatFlag = 1;
         MDIO_vSetPinVal(DIO_PORTA, TEMP_LED, DIO_HIGH);  // Overheat LED ON
-        motorstop();  // Stop motor immediately
+        motorstop();  // Stop motor 
     }
     else
         MDIO_vSetPinVal(DIO_PORTA, TEMP_LED, DIO_LOW);  // Overheat LED ON
