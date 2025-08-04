@@ -9,11 +9,11 @@
 #define HAL_LCD_LCD_INT_H_
 
 
-#define LCD_CTRL_PORT 	DIO_PORTA
-#define LCD_DATA_PORT 	DIO_PORTD
-#define LCD_RS			DIO_PIN0
-#define LCD_RW			DIO_PIN1
-#define LCD_E			DIO_PIN2
+#define LCD_CTRL_PORT 	DIO_PORTD
+#define LCD_DATA_PORT 	DIO_PORTC
+#define LCD_RS			DIO_PIN3
+#define LCD_RW			DIO_PIN4
+#define LCD_E			DIO_PIN5
 
 #define DDRAM_BASE_ADDR_R0  0x80
 #define DDRAM_BASE_ADDR_R1  0xC0

@@ -14,7 +14,7 @@
  * DISABLE
  * */
 #define TIMERID_0  	ENABLE
-#define TIMERID_1  	DISABLE
+#define TIMERID_1  	ENABLE
 #define TIMERID_2  	DISABLE
 
 /* Configuire Prescaller */
@@ -38,7 +38,7 @@
    CTC
    FAST_PWM
  * */
-#define TIMERID_0_MODE	NORMAL_OVERFLOW
+#define TIMERID_0_MODE	CTC
 
 
 /*Interrupt enable/ disable */

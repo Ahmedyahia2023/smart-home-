@@ -11,6 +11,7 @@ RM := rm -rf
 -include app/subdir.mk
 -include MCAL/WDT/subdir.mk
 -include MCAL/USART/subdir.mk
+-include MCAL/TWI/subdir.mk
 -include MCAL/TIMERS/subdir.mk
 -include MCAL/SPI/subdir.mk
 -include MCAL/GIE/subdir.mk

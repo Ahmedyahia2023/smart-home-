@@ -73,22 +73,22 @@ void MTIMERS_vInit(void)
 #if TIMERID_1 == ENABLE
 	//	/* Fast PWM mode */
 	//	// non inverting mode
-	//	SET_BIT(TCCR1A, 7);
-	//	CLR_BIT(TCCR1A, 6);
+		SET_BIT(TCCR1A, 7);
+		CLR_BIT(TCCR1A, 6);
 	//	// waveform
-	//	SET_BIT(TCCR1A,1);
-	//	CLR_BIT(TCCR1A,0);
-	//	SET_BIT(TCCR1B,3);
-	//	SET_BIT(TCCR1B,4);
+		SET_BIT(TCCR1A,1);
+		CLR_BIT(TCCR1A,0);
+		SET_BIT(TCCR1B,3);
+		SET_BIT(TCCR1B,4);
 	//	// prescaler (64)
-	//	SET_BIT(TCCR1B, 0);
-	//	SET_BIT(TCCR1B, 1);
-	//	CLR_BIT(TCCR1B, 2);
+		SET_BIT(TCCR1B, 0);
+		SET_BIT(TCCR1B, 1);
+		CLR_BIT(TCCR1B, 2);
 	//	// value ICR1
-	//	ICR1 = 2499;
+		ICR1 = 2499;
 
-	TCCR1A = 0b00000000;
-	TCCR1B = 0b01000010;
+//	TCCR1A = 0b00000000;
+//	TCCR1B = 0b01000010;
 
 
 
