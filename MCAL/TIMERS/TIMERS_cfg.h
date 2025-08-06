@@ -38,7 +38,7 @@
    CTC
    FAST_PWM
  * */
-#define TIMERID_0_MODE	CTC
+#define TIMERID_0_MODE	FAST_PWM
 
 
 /*Interrupt enable/ disable */

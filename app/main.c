@@ -19,7 +19,7 @@
 /*
 	KEYPAD PORTB ROWS 4,5,6,7
 	KEYPAD PORTB COLUMNS 3,4,5
-	#define LCD_CTRL_PORT 	DIO_PORTD
+	#define LCD_CTRL_PORT 	DIO_PORTB
 	#define LCD_DATA_PORT 	DIO_PORTC
 	#define LCD_RS			DIO_PIN0
 	#define LCD_RW			DIO_PIN1
@@ -33,9 +33,9 @@
 #define MOTORPIN2  3   // PA3
 #define TEMP_LED   4   // PA4
 #define SERVOPIN 	5 //SERVO PD5
-#define BuzzerPin   1// BUZZER	PB1
-#define fanPIn1		2	//PB2
-#define fanPIn2		3	//PB3
+#define BuzzerPin   7// BUZZER	PD7
+#define fanPIn1		6	//PA6
+#define fanPIn2		7	//PA7
 /////////////////////////////////////////////////
 u8 motorState = 0;
 u8 overheatFlag = 0;
@@ -43,12 +43,12 @@ u8 overheatFlag = 0;
 u16 LM35_reading = 0;
 u16 LDR_reading = 0;
 u8 temp = 0;
-
+u8 flage=0;
 u8 KeyPap[KPD_ROWS][KPD_COLS] =
 {
     {'7', '8', '9'},
-    {'4', '5', '6'},
     {'1', '2', '3'},
+	{'4', '5', '6'},
     {'*', '0', '#'}
 };
 u8 key_enter[5];
@@ -65,41 +65,44 @@ void ServoOff_func(void);
 /////////////////////////////////////////////////
 
 void main(void)
-{
+{	//Welcome_Screen();
     MGIE_vEnableGlobalInterrupt();
     MEXTI_vInit();
     MTIMERS_vInit();
     MADC_vInit();
     MUSART_vInit();
     HLCD_vInit();
+    HKPD_vInit();
 
     // Input Pins
     MDIO_vSetPinDir(DIO_PORTA, LM35PIN, DIO_INPUT);
     MDIO_vSetPinDir(DIO_PORTA, LDRPIN, DIO_INPUT);
-    MDIO_vSetPinDir(DIO_PORTA, 6, DIO_INPUT);
+    MDIO_vSetPinDir(DIO_PORTA, 5, DIO_INPUT);
     // Motor Control Output Pins
     MDIO_vSetPinDir(DIO_PORTA, MOTORPIN1, DIO_OUTPUT);
     MDIO_vSetPinDir(DIO_PORTA, MOTORPIN2, DIO_OUTPUT);
-    MDIO_vSetPinDir(DIO_PORTB, fanPIn1, DIO_OUTPUT);
-       MDIO_vSetPinDir(DIO_PORTB, fanPIn2, DIO_OUTPUT);
+    MDIO_vSetPinDir(DIO_PORTA, fanPIn1, DIO_OUTPUT);
+       MDIO_vSetPinDir(DIO_PORTA, fanPIn2, DIO_OUTPUT);
     //BUZZER
-    MDIO_vSetPinDir(DIO_PORTB, BuzzerPin, DIO_OUTPUT);
+    MDIO_vSetPinDir(DIO_PORTD, BuzzerPin, DIO_OUTPUT);
 
 
     // LED or test pin output
     MDIO_vSetPinDir(DIO_PORTA, TEMP_LED, DIO_OUTPUT);
     MDIO_vSetPinDir(DIO_PORTD, SERVOPIN, DIO_OUTPUT);
         //TEST=++++===
-        MDIO_vSetPinVal(DIO_PORTA, 6, DIO_HIGH);
+        MDIO_vSetPinVal(DIO_PORTA, 5, DIO_HIGH);
 
     // Set temperature alarm check every X ticks (adjust internally)
     MTIMERS_vStartTimer(TIM_1_A);
 
     // SERVO PINS
-
+    Welcome_Screen();
+    LCD_STATE();
 
     while (1)
-    {	LDR_func();
+    {
+    	LDR_func();
     	LM35_func();
 
         // Skip all logic if overheat occurred
@@ -107,7 +110,7 @@ void main(void)
 
 
 
-        	u8 x=MDIO_u8GETPinVal(DIO_PORTA, DIO_PIN6);
+        	u8 x=MDIO_u8GETPinVal(DIO_PORTA, DIO_PIN5);
         	 			if(x==0)
         	 			{ServoOn_func(90);
         	 				_delay_ms(500);
@@ -125,15 +128,18 @@ void LDR_func(void)
 
     if (LDR_reading >= 800 && motorState == 0)
     {
-
+    	HLCD_vSetCursorPosition(0,11);
+    	  HLCD_vDisplayString("O");
         MotorUp_Func(DIO_PORTA,MOTORPIN1,MOTORPIN2);
         _delay_ms(500);
         motorstop(DIO_PORTA,MOTORPIN1,MOTORPIN2);
+
         _delay_ms(500);
         motorState = 1;
     }
     else if (LDR_reading < 300 && motorState == 1)
-    {
+    {	HLCD_vSetCursorPosition(0,11);
+    	HLCD_vDisplayString("C");
         MotorDown_Func(DIO_PORTA,MOTORPIN1,MOTORPIN2);
         _delay_ms(500);
         motorstop(DIO_PORTA,MOTORPIN1,MOTORPIN2);
@@ -167,7 +173,7 @@ void motorstop(u8 port, u8 pin1 ,u8 pin2)
 
 //THE WELCOME SCREEN
 void Welcome_Screen(void){
-	static u8 alarm_var=0;
+	 u8 alarm_var=0;
 	HLCD_vClearScreen();
 	HLCD_vSetCursorPosition(0, 0);
 	HLCD_vDisplayString("Welcome Home");
@@ -202,6 +208,7 @@ void Welcome_Screen(void){
 
 	if(strcmp(key_enter,pass_key)==0)
 	{
+		flage=1;
 		return;
 	}
 
@@ -218,12 +225,24 @@ void Welcome_Screen(void){
 
 
 }
+
+
+void LCD_STATE(void){
+
+	 HLCD_vClearScreen();
+	    HLCD_vSetCursorPosition(0,0);
+	       HLCD_vDisplayString("FAN");
+	    HLCD_vSetCursorPosition(0,6);
+	     HLCD_vDisplayString("WIND");
+
+
+}
 void BuzzerOn_Func(void){
-	MDIO_vSetPinVal(DIO_PORTB, BuzzerPin, DIO_HIGH);
+	MDIO_vSetPinVal(DIO_PORTD, BuzzerPin, DIO_HIGH);
 }
 
 void BuzzerOff_Func(void){
-	MDIO_vSetPinVal(DIO_PORTB, BuzzerPin, DIO_LOW);
+	MDIO_vSetPinVal(DIO_PORTD, BuzzerPin, DIO_LOW);
 
 
 }
@@ -252,9 +271,9 @@ void LM35_func(void)
 
       if (local_temp >= 30 && local_temp < 60 && tempState == 0)
        {BuzzerOff_Func();
-    	  HLCD_vClearScreen();
-    	  HLCD_vSetCursorPosition(0,0);
-    	  HLCD_vDisplayString("Open fan");
+
+    	  HLCD_vSetCursorPosition(0,4);
+    	  HLCD_vDisplayString("O");
            BuzzerOn_Func();
            _delay_ms(50);
            BuzzerOff_Func();
@@ -264,13 +283,12 @@ void LM35_func(void)
        }
        else if (local_temp < 30 && tempState == 1)
        {BuzzerOff_Func();
-    	 HLCD_vClearScreen();
-    	 HLCD_vSetCursorPosition(0,0);
     	 ServoOff_func();
-    	 HLCD_vDisplayString("Close Window");
+    	 HLCD_vSetCursorPosition(0,4);
+    	  HLCD_vDisplayString("C");
            tempState = 0;
 
-           motorstop(DIO_PORTB,fanPIn1,fanPIn2);
+           motorstop(DIO_PORTA,fanPIn1,fanPIn2);
        }
     if (local_temp > 60)
     {
@@ -279,7 +297,7 @@ void LM35_func(void)
         HLCD_vDisplayString("alert!!");
         HLCD_vSetCursorPosition(1,0);
         HLCD_vDisplayString("Closing System");
-        motorstop(DIO_PORTB,fanPIn1,fanPIn2);  // Stop motor
+        motorstop(DIO_PORTA,fanPIn1,fanPIn2);  // Stop motor
         ServoOn_func(90);
         BuzzerOn_Func();
          MDIO_vSetPinVal(DIO_PORTA, TEMP_LED, DIO_HIGH);
@@ -287,10 +305,12 @@ void LM35_func(void)
 // Overheat LED ON
     }
     else
+
         MDIO_vSetPinVal(DIO_PORTA, TEMP_LED, DIO_LOW);  // Overheat LED ON
 
 
 }
+
 
 
 
