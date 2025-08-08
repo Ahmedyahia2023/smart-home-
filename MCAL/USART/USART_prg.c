@@ -35,7 +35,7 @@ void MUSART_vTransmit(u8 A_u8Byte)
 u8 MUSART_vReceive(void)
 {
 	/* Wait for data to be received */
-	while(!GET_BIT(UCSRA, RXC));
+	//while(!GET_BIT(UCSRA, RXC));
 //	while ( !(UCSRA & (1<<RXC)) )
 //	;
 	/* Get and return received data from buffer */
